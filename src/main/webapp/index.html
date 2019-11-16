@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Websocket chat</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>Websocket chat</div>
+        <br/>
+        <div id="connection">Disconnect</div>
+        <br/>
+        <!--<form accept-charset="UTF-8" onsubmit="send()" method="post">-->
+        <input type="text" placeholder="Message" id="textmsg" /><br/>
+            <input type="submit" value="Odeslat" onclick="send()" />
+            <!--</form>-->
+            <br/>
+        <div id="chatTable">
+
+        </div>
+
+        <script type="text/javascript">
+            const websocket = new WebSocket('ws://localhost:8080/websocket/chat');
+
+            websocket.onerror = function(event){
+                onError(event);
+            };
+
+            websocket.onmessage = function(event){
+                onMessage(event);
+            };
+
+            websocket.onopen = function(event){
+                onOpen(event);
+            };
+
+            websocket.onclose = function(event){
+                onClose(event);
+            };
+
+            function onMessage(event){
+                const message = event.data;
+                console.log(message);
+                document.getElementById("chatTable").innerHTML += `<p>${message}</p>`;
+            }
+
+            function onOpen(event){
+                document.getElementById("connection").innerHTML = "Connection!";
+                document.getElementById("connection").setAttribute("style", "color: green; font-size: 1.5em;");
+                console.log("open");
+            }
+
+            function onError(event){
+                alert('Websocket error: ' + event.data);
+            }
+
+            function onClose(event){
+                document.getElementById("connection").innerHTML = "Disconnection";
+                document.getElementById("connection").setAttribute("style", "color: red; font-size: 1.5em;");
+                console.log("close");
+            }
+
+            function send(){
+                let message = document.getElementById("textmsg").value;
+                websocket.send(message);
+            }
+        </script>
+
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+                integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+        crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+                integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+        crossorigin="anonymous"></script>
+    </body>
+</html>
