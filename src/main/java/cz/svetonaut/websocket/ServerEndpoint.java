@@ -43,7 +43,6 @@ public class ServerEndpoint {
     public void onMessage(String message, Session session) {
         System.out.println("Websocket message: " + message);
         try {
-//            session.getBasicRemote().sendText(message);
             broadcastMessage(message);
         } catch (IOException e) {
             e.printStackTrace();
